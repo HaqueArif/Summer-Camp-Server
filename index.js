@@ -29,7 +29,7 @@ async function run() {
 
     const dataCollection = client.db('summerCampDb').collection('data');
 
-    app.get('/home', async(req, res)=>{
+    app.get('/instructors', async(req, res)=>{
         const result = await dataCollection.find().toArray();
         res.send(result)
     })
