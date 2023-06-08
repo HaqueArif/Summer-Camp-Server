@@ -28,13 +28,30 @@ async function run() {
 
 
     const dataCollection = client.db('summerCampDb').collection('data');
+    const classCollection = client.db('summerCampDb').collection('classes');
 
     app.get('/instructors', async(req, res)=>{
         const result = await dataCollection.find().toArray();
         res.send(result)
     })
+
+    app.get('/classes', async (req, res)=>{
+      const email = req.query.email;
+      if(!email){
+        res.send([]);
+      }
+      const query = {email: email};
+      const result = await classCollection.find(query).toArray();
+      res.send(result)
+    })
     
-    
+    // Selected Class Collection
+    app.post('/classes', async(req, res)=>{
+      const selected = req.body;
+      console.log(selected);
+      const result = await classCollection.insertOne(selected);
+      res.send(result)
+    })
     
     
     // Send a ping to confirm a successful connection
