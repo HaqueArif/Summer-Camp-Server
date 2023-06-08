@@ -37,6 +37,7 @@ async function run() {
 
     app.get('/classes', async (req, res)=>{
       const email = req.query.email;
+      console.log(email);
       if(!email){
         res.send([]);
       }
@@ -47,9 +48,9 @@ async function run() {
     
     // Selected Class Collection
     app.post('/classes', async(req, res)=>{
-      const selected = req.body;
-      console.log(selected);
-      const result = await classCollection.insertOne(selected);
+      const classes = req.body;
+      console.log(classes);
+      const result = await classCollection.insertOne(classes);
       res.send(result)
     })
     
