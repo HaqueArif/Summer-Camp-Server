@@ -3,6 +3,7 @@ const app = express()
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 const port = process.env.PORT || 5000;
 
 
@@ -46,6 +47,7 @@ async function run() {
     const usersCollection = client.db('summerCampDb').collection('users');
     const dataCollection = client.db('summerCampDb').collection('data');
     const classCollection = client.db('summerCampDb').collection('classes');
+    const paymentCollection = client.db('summerCampDb').collection('payments');
 
     
     app.post('/jwt', (req, res)=>{
@@ -159,6 +161,20 @@ async function run() {
       const query = {_id: new ObjectId(id)}
       const result = await classCollection.deleteOne(query);
       res.send(result)
+    })
+
+
+    app.post('/create-payment-intent', verifyJWT, async (req, res) =>{
+      const {price} = req.body;
+      const amount = price * 100;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      })
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
     })
 
     
