@@ -81,7 +81,7 @@ async function run() {
     }
 
 
-    app.get('/users', verifyJWT, verifyAdmin, verifyInstructor, async (req, res) => {
+    app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     })
@@ -153,7 +153,7 @@ async function run() {
       res.send(result)
     })
 
-    app.get('/instructors', verifyJWT, async (req, res) => {
+    app.get('/instructors', verifyJWT, verifyInstructor, async (req, res) => {
       const requestedEmail = req.query.email;
       console.log(requestedEmail);
       if (!requestedEmail) {
@@ -169,10 +169,6 @@ async function run() {
       const result = await dataCollection.find(query).toArray();
       res.send(result);
     });
-
-
-    
-
 
 
     app.post('/instructors', async (req, res) => {
